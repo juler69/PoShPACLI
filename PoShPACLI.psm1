@@ -198,8 +198,12 @@ Function ConvertTo-ParameterString{
             If($excludedParameters -notContains $_.key){
                     
                 #add key=value to array, process switch values to equate TRUE=Yes, FALSE=No
-                $parameters+=$($_.Key)+"="+(($($_.Value) -replace "True", "YES") -replace "False", "NO")
-            
+                #$parameters+=$($_.Key)+"="+(($($_.Value) -replace "True", "YES") -replace "False", "NO")
+                If (($_.Value -eq "True") -Or ($_.Value -eq "False")) {
+                    $parameters+=$($_.Key)+"="+(($($_.Value) -replace "True", "YES") -replace "False", "NO")
+                } else {
+                    $parameters+=$($_.Key)+"=`""+(($($_.Value)+"`"" -replace "True", "YES") -replace "False", "NO")
+                }
             }
                 
         }    
@@ -218,7 +222,8 @@ Function ConvertTo-ParameterString{
                 $parameters = ((($parameters -replace "(\s)",'""" "') -replace "(^)|($)",'"') -replace "(=)",'=""')
             
             }
-                
+
+            $parameters+=";"    
             write-debug $parameters
             #output parameter string
             $parameters
@@ -319,7 +324,7 @@ Function Initialize-PoShPACLI{
         Else{
         
             Set-Variable -Scope $scope -name pacli -Value $pacliPath -Force -PassThru -ErrorAction Stop
-        
+
         }
     
     }
@@ -383,7 +388,7 @@ Function Start-PACLI{
             Write-Verbose "Error Starting Pacli"
             
             #Return FALSE
-            $false
+
             
         }
         
@@ -393,7 +398,7 @@ Function Start-PACLI{
             Write-Verbose "Pacli Started"
             
             #return TRUE
-            $true
+
             
         }
         
@@ -454,7 +459,7 @@ Function Stop-PACLI{
             Write-Verbose "Error Stopping Pacli"
             
             #Return FALSE
-            $false
+
             
         }
         
@@ -464,7 +469,7 @@ Function Stop-PACLI{
             Write-Verbose "Pacli Stopped"
             
             #return TRUE
-            $true
+
             
         }
         
@@ -608,7 +613,7 @@ Function Add-VaultDefinition{
 
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose $($vaultDefinition)
-            $false
+
             
         }
         
@@ -616,7 +621,7 @@ Function Add-VaultDefinition{
             
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "Vault Defined"
-            $true
+
             
         }    
         
@@ -680,7 +685,7 @@ Function Read-VaultConfigFile{
 
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose $($vaultConfig)
-            $false
+
             
         }
         
@@ -688,7 +693,7 @@ Function Read-VaultConfigFile{
             
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "Vault Config Read"
-            $true
+
             
         }
         
@@ -742,14 +747,14 @@ Function Remove-VaultDefinition{
         if($LASTEXITCODE){
 
             write-debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
             
             write-debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }  
         
@@ -853,7 +858,7 @@ Function Connect-Vault{
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "Error Logging on"
             Write-Debug $($pacliLogon|out-string)
-            $false
+
             
         }
         
@@ -861,7 +866,7 @@ Function Connect-Vault{
         
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "Succesfully Logged on"
-            $true
+
             
         }
         
@@ -926,14 +931,14 @@ Function New-LogonFile{
         if($LASTEXITCODE){
             
             write-debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             write-debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -994,14 +999,14 @@ Function Disconnect-Vault{
             
             Write-Debug "LastExitCode: $LASTEXITCODE"
             Write-Debug $pacliLogoff
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -1069,13 +1074,13 @@ Function Set-Password{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -1132,13 +1137,13 @@ Function Lock-User{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -1200,13 +1205,13 @@ Function Unlock-User{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -1506,13 +1511,13 @@ Function Add-User{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -1811,13 +1816,13 @@ Function Update-User{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -1883,13 +1888,13 @@ Function Rename-User{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -1951,13 +1956,13 @@ Function Remove-User{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -2040,7 +2045,7 @@ Function Add-ExternalUser{
 
         #$PACLI variable set to executable path
         
-        $addUser = (Invoke-Expression "$pacli ADDUPDATEEXTERNALUSERENTITY $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString) Output '(ALL,ENCLOSE)'" -ErrorAction SilentlyContinue) 2>&1
+        [array]$addUser = (Invoke-Expression "$pacli ADDUPDATEEXTERNALUSERENTITY $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString) Output '(ALL,ENCLOSE)'" -ErrorAction SilentlyContinue) 2>&1
         
         if($LASTEXITCODE){
             
@@ -2603,13 +2608,13 @@ Function Clear-UserHistory{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -2679,13 +2684,13 @@ Function Set-UserPhoto{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -2755,13 +2760,13 @@ Function Get-UserPhoto{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -2924,13 +2929,13 @@ Function Send-PAMailMessage{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -2991,7 +2996,7 @@ Function Add-SafeShare{
 
         #$PACLI variable set to executable path
                 
-        $addSafeShare = (Invoke-Expression "$pacli ADDSAFESHARE $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString)" -ErrorAction SilentlyContinue) 2>&1
+        [array]$addSafeShare = (Invoke-Expression "$pacli ADDSAFESHARE $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString)" -ErrorAction SilentlyContinue) 2>&1
 
         if($LASTEXITCODE){
 
@@ -3067,13 +3072,13 @@ Function Remove-SafeShare{
 
         #$PACLI variable set to executable path
                 
-        $deleteSafeShare = (Invoke-Expression "$pacli DELETESAFESHARE $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString)" -ErrorAction SilentlyContinue) 2>&1
+        [array]$deleteSafeShare = (Invoke-Expression "$pacli DELETESAFESHARE $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString)" -ErrorAction SilentlyContinue) 2>&1
 
         if($LASTEXITCODE){
 
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "Error Deleting Sharing Safe: $safe"
-            write-debug $($addSafeShare[0]|out-string)
+            write-debug $($deleteSafeShare[0]|out-string)
             
         }
         
@@ -3155,13 +3160,13 @@ Function Add-Group{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -3236,13 +3241,13 @@ Function Update-Group{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -3304,13 +3309,13 @@ Function Remove-Group{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -3376,13 +3381,13 @@ Function Add-GroupMember{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -3448,13 +3453,13 @@ Function Remove-GroupMember{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -3522,13 +3527,13 @@ Function Add-Location{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -3596,13 +3601,13 @@ Function Update-Location{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -3669,13 +3674,13 @@ Function Rename-Location{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -3738,13 +3743,13 @@ Function Remove-Location{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -4537,13 +4542,13 @@ Function Add-NetworkArea{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -4605,13 +4610,13 @@ Function Remove-NetworkArea{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -4678,13 +4683,13 @@ Function Move-NetworkArea{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -4750,13 +4755,13 @@ Function Rename-NetworkArea{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -4920,13 +4925,13 @@ Function Add-AreaAddress{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -4992,13 +4997,13 @@ Function Remove-AreaAddress{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -5078,13 +5083,13 @@ Function Add-TrustedNetworkArea{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -5150,13 +5155,13 @@ Function Remove-TrustedNetworkArea{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -5320,13 +5325,13 @@ Function Enable-TrustedNetworkArea{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -5392,13 +5397,13 @@ Function Disable-TrustedNetworkArea{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -5514,7 +5519,7 @@ Function Open-Safe{
 
         #$PACLI variable set to executable path
                         
-        $openSafe = (Invoke-Expression "$pacli OPENSAFE $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString) OUTPUT '(ALL,ENCLOSE)'") | 
+        $openSafe = (Invoke-Expression "$pacli OPENSAFE OUTPUT '(ALL,ENCLOSE)' $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString) ") | 
             
             #ignore whitespace lines
             Select-String -Pattern "\S"
@@ -5523,7 +5528,7 @@ Function Open-Safe{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
             #error openeing safe, return false
-            $false
+
             
         }
         
@@ -5629,14 +5634,14 @@ Function Close-Safe{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -5878,21 +5883,22 @@ Function Add-Safe{
 
         #$PACLI variable set to executable path
                         
-        $addSafe = (Invoke-Expression "$pacli ADDSAFE $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString)" -ErrorAction SilentlyContinue) 2>&1
+        [array]$addSafe = (Invoke-Expression "$pacli ADDSAFE $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString)" -ErrorAction SilentlyContinue) 2>&1
         
         if($LASTEXITCODE){
 
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "Error Creating Safe: $safe"
             write-Debug $($addSafe[0]|Out-String)
-            
+
         }
         
         Else{
         
             write-debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "Safe Created: $safe"
-            
+
+
         }
         
     }
@@ -6444,13 +6450,13 @@ Function Add-SafeOwner{
 
         #$PACLI variable set to executable path
                         
-        $safeOwner = (Invoke-Expression "$pacli ADDOWNER $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString)") 2>&1
+        $safeOwner = (Invoke-Expression "$pacli ADDOWNER $($PSBoundParameters.getEnumerator() | ConvertTo-ParameterString )") 2>&1
 
         if($LASTEXITCODE){
         
             write-debug "LastExitCode: $LASTEXITCODE"
             write-verbose "Error Adding Safe Owner: $owner"
-            
+            write-Debug $($safeOwner|Out-String)
         }
         
         Else{
@@ -6710,13 +6716,15 @@ Function Remove-SafeOwner{
         if($LASTEXITCODE){
         
             write-debug "LastExitCode: $LASTEXITCODE"
-            
+
+
         }
         
         Else{
         
             write-debug "LastExitCode: $LASTEXITCODE"
-            
+
+
         }
         
     }
@@ -8222,14 +8230,14 @@ Function Add-Folder{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -8296,14 +8304,14 @@ Function Remove-Folder{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -8371,14 +8379,14 @@ Function Restore-Folder{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -8449,14 +8457,14 @@ Function Move-Folder{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -8616,14 +8624,14 @@ Function Add-PreferredFolder{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -8689,14 +8697,14 @@ Function Remove-PreferredFolder{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -8778,14 +8786,14 @@ Function Add-File{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -8932,14 +8940,14 @@ Function Get-File{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -9011,14 +9019,14 @@ Function Remove-File{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -9088,14 +9096,14 @@ Function Restore-File{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -9172,7 +9180,7 @@ Function Add-PasswordObject{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
             #error storing password, return false
-            $false
+
             
         }
         
@@ -9180,7 +9188,7 @@ Function Add-PasswordObject{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
             #password stored return true
-            $true
+
             
         }
         
@@ -9422,7 +9430,7 @@ Function Lock-File{
             Write-Verbose "Error Locking File: $file"
             Write-Debug $($lockFile|Out-String)
             #error Locking File, return false
-            $false
+
             
         }
         
@@ -9431,7 +9439,7 @@ Function Lock-File{
             Write-Debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "$file Locked"
             #File Locked return true
-            $true
+
             
         }
         
@@ -9504,7 +9512,7 @@ Function Unlock-File{
             Write-Verbose "Error Unlocking File: $file"
             Write-Debug $($unlockFile|Out-String)
             #error unlocking File, return false
-            $false
+
             
         }
         
@@ -9513,7 +9521,7 @@ Function Unlock-File{
             Write-Debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "$file Unlocked"
             #File unlocked return true
-            $true
+
             
         }
         
@@ -9587,14 +9595,14 @@ Function Move-File{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -10233,14 +10241,14 @@ Function Reset-File{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -10428,7 +10436,7 @@ Function Add-FileCategory{
             Write-Debug "LastExitCode: $LASTEXITCODE"
             write-debug $($addCategory|out-string)
             #error adding category, return false
-            $false
+
             
         }
         
@@ -10436,7 +10444,7 @@ Function Add-FileCategory{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
             #category added return true
-            $true
+
             
         }
         
@@ -10517,7 +10525,7 @@ Function Update-FileCategory{
             Write-Verbose "Error updating File Category: $category"
             Write-Debug $($updateCategory|Out-String)
             #error updating category, return false
-            $false
+
             
         }
         
@@ -10526,7 +10534,7 @@ Function Update-FileCategory{
             Write-Debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "File Category $category Updated"
             #category updated added return true
-            $true
+
             
         }
         
@@ -10600,14 +10608,14 @@ Function Remove-FileCategory{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -10799,14 +10807,14 @@ Function Confirm-Object{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -11116,7 +11124,7 @@ Function Add-Rule{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
@@ -11224,13 +11232,13 @@ Function Remove-Rule{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -11308,7 +11316,7 @@ Function Get-RulesList{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
@@ -11463,7 +11471,7 @@ Function Get-RequestsList{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
@@ -11587,7 +11595,7 @@ Function Confirm-Request{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
             
         }
         
@@ -11700,13 +11708,13 @@ Function Remove-Request{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -11904,7 +11912,7 @@ Function New-Password{
             Write-Debug "LastExitCode: $LASTEXITCODE"
             Write-Verbose "Error Generating Password"
             Write-Debug $($generatePassword|Out-String)
-            $false
+
             
         }
         
@@ -12053,13 +12061,13 @@ Function Add-CTLCert{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
@@ -12119,13 +12127,13 @@ Function Remove-CTLCert{
         if($LASTEXITCODE){
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $false
+
         }
         
         Else{
         
             Write-Debug "LastExitCode: $LASTEXITCODE"
-            $true
+
             
         }
         
